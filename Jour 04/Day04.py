@@ -167,22 +167,6 @@ moto.demarrer()
 
 
 #JOB 7
-class Jeu():
-    def __init__(self,nom):
-        self.nom = nom
-
-    def win(self):
-        return ("Congrat, you win")
-    def loose(self):
-        return ("Sorry you loose")
-    
-    def continuer(self):
-        print("Do you want continue?(YES/NO)")
-        self.choose = input(":")
-        if self.choose == "YES" :
-            return True
-        if self.choose == "NO" :
-            return False
 
 class Jeu():
     def __init__(self, nom):
@@ -193,6 +177,9 @@ class Jeu():
 
     def loose(self):
         return "Sorry you loose"
+    
+    def draw(self):
+        return "It's a draw !"
 
     def continuer(self):
         print("Do you want to continue? (YES/NO)")
@@ -203,19 +190,54 @@ class Jeu():
 class Carte(Jeu):
     def __init__(self, nom):
         super().__init__(nom)
-        self.joker ="un as de"
-        self.valeurs = [2, 3, 4, 5, 6, 7, 8, 9, 10, self.joker]
+        self.valeurs = []
+        for i in range(1, 53):
+            self.valeurs.append(i)
         self.couleurs = ["Coeur", "Carreau", "Pique", "Trefle"]
         self.carte_tiré = []
-
+        
     def draw_card(self):
         self.valeur = random.choice(self.valeurs)
         self.couleur = random.choice(self.couleurs)
-        print(f"Vous piochez {self.valeur} {self.couleur}")
-        if self.valeur == self.joker:
+        if 1 <= self.valeur <= 4:
             self.joker_choice()
-        self.carte_tiré.append(self.valeur)
+        if 5 < self.valeur <= 9:
+            self.card = 2
+            self.carte_tiré.append(2)
+        if 9 < self.valeur <= 13:
+            self.card = 3
+            self.carte_tiré.append(3)
+        if 13 < self.valeur <= 17:
+            self.card = 4
+            self.carte_tiré.append(4)
+        if 17 < self.valeur <= 21:
+            self.card = 5
+            self.carte_tiré.append(5)
+        if 21 < self.valeur <= 25:
+            self.card = 6
+            self.carte_tiré.append(6)
+        if 25 < self.valeur <= 29:
+            self.card = 7
+            self.carte_tiré.append(7)
+        if 29 < self.valeur <= 33:
+            self.card = 8
+            self.carte_tiré.append(8)
+        if 33 < self.valeur <= 37:
+            self.card = 9
+            self.carte_tiré.append(9)
+        if 37 < self.valeur <= 52:
+            self.carte_tiré.append(10)
+            if 37 < self.valeur <= 41 :
+                self.card = 10
+            if 41 < self.valeur <= 45 :
+                self.card = "Valet"
+            if 45 < self.valeur <= 49:
+                self.card = "Dame"
+            if 49 < self.valeur < 53 :
+                self.card = "Roi"
+        print(f"Vous piochez {self.card} {self.couleur}")
         self.total()
+
 
     def total(self):
         total = sum(self.carte_tiré)
@@ -224,17 +246,7 @@ class Carte(Jeu):
 
     def joker_choice(self):
         self.joker = int(input("You draw an as, choose between 1 or 11: "))
-        if self.joker == 1: 
-            print("You choose 1")
-            return 1
-        elif self.joker == 11:
-            print("You choose 11")
-            return 11
-        else:
-            print("Please enter a correct value (1 or 11)")
-            self.joker_choice()
-            
-
+        self.carte_tiré.append(self.joker)
 
 class Croupier(Carte):
     def __init__(self, nom):
@@ -243,14 +255,49 @@ class Croupier(Carte):
     def draw_card(self):
         self.valeur = random.choice(self.valeurs)
         self.couleur = random.choice(self.couleurs)
-        print(f"Le croupier pioche {self.valeur} {self.couleur}")
-        if self.valeur == self.joker:
-            self.joker_choice()
-        self.carte_tiré.append(self.valeur)
+        if 1 <= self.valeur <= 4:
+            self.card = "as"
+            self.carte_tiré.append(1)
+        if 5 < self.valeur <= 9:
+            self.card = 2
+            self.carte_tiré.append(2)
+        if 9 < self.valeur <= 13:
+            self.card = 3
+            self.carte_tiré.append(3)
+        if 13 < self.valeur <= 17:
+            self.card = 4
+            self.carte_tiré.append(4)
+        if 17 < self.valeur <= 21:
+            self.card = 5
+            self.carte_tiré.append(5)
+        if 21 < self.valeur <= 25:
+            self.card = 6
+            self.carte_tiré.append(6)
+        if 25 < self.valeur <= 29:
+            self.card = 7
+            self.carte_tiré.append(7)
+        if 29 < self.valeur <= 33:
+            self.card = 8
+            self.carte_tiré.append(8)
+        if 33 < self.valeur <= 37:
+            self.card = 9
+            self.carte_tiré.append(9)
+        if 37 < self.valeur <= 52:
+            self.carte_tiré.append(10)
+            if 37 < self.valeur <= 41 :
+                self.card = 10
+            if 41 < self.valeur <= 45 :
+                self.card = "Valet"
+            if 45 < self.valeur <= 49:
+                self.card = "Dame"
+            if 49 < self.valeur < 53 :
+                self.card = "Roi"
+        print(f"Le croupier pioche {self.card} {self.couleur}")
         self.total()
 
     def joker_choice(self):
-        return 1
+        self.joker = 1
+        self.carte_tiré.append(self.joker)
     
     def total(self):
         total = sum(self.carte_tiré)
@@ -264,10 +311,11 @@ def play():
     croupier = Croupier("Croupier")
 
     while True:
-        player.draw_card()
-        croupier.draw_card()
+        if croupier.total() < 17 :
+            player.draw_card()
+            croupier.draw_card()
         if 17 < croupier.total() <= 21:
-            pass
+            player.draw_card()
         if player.total() > 21:
             print(jeu.loose())
             break
@@ -278,14 +326,22 @@ def play():
         if not jeu.continuer():
             if croupier.total()<player.total():
                 croupier.draw_card()
-            if croupier.total() > 21:
+            if croupier.total() > 21 and player.total() < 21:
                 print(jeu.win())
                 break
-            if player.total() > croupier.total():
+            if 21 > player.total() > croupier.total():
                 print(jeu.win())
                 break
             if  21 > croupier.total() > player.total() :
                 print(jeu.loose())
+                break
+            if player.total() == croupier.total():
+                print(jeu.draw())
+                break
+            if player.total()> 21 and croupier.total() > 21:
+                print(jeu.draw())
+                break
+        else :
             break
 
 
